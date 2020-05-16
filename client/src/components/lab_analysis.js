@@ -12,8 +12,123 @@ import { BrowserRouter, Route } from 'react-router-dom'
 import { Map, TileLayer, Marker, Popup } from 'react-leaflet'
 import axios from 'axios'
 import L from 'leaflet'
-
+import ipfs from '../ipfs'
+import getWeb3 from "../getWeb3";
+import RecordContract from "../contracts/Record.json";
 class lab_analysis extends Component{
+    
+    state = {  web3: null, accounts: null, contract: null, username: null, password: null, address: null};
+
+//records_list=this.state.records
+
+
+
+  
+  
+  componentDidMount = async () => {
+    try {
+      // Get network provider and web3 instance.
+      const web3 = await getWeb3();
+
+      // Use web3 to get the user's accounts.
+      const accounts = await web3.eth.getAccounts();
+
+      // Get the contract instance.
+      const networkId = await web3.eth.net.getId();
+      const deployedNetwork = RecordContract.networks[networkId];
+      const instance = new web3.eth.Contract(
+        RecordContract.abi,
+        deployedNetwork && deployedNetwork.address,
+      );
+
+      // Set web3, accounts, and contract to the state, and then proceed with an
+      // example of interacting with the contract's methods.
+      this.setState({ web3, accounts, contract: instance }, this.runExample);
+      console.log(this.state)
+    } catch (error) {
+      // Catch any errors for any of the above operations.
+      alert(
+        `Failed to load web3, accounts, or contract. Check console for details.`,
+      );
+      console.error(error);
+    }
+  };  
+
+
+  runExample = async () => {
+    const { accounts, contract } = this.state;
+   console.log(this.state.accounts[0])
+
+    // Get the value from the contract to prove it worked.
+   const Kidney = await contract.methods.getKidney(accounts[0]).call()
+    const Liver = await contract.methods.getLiver(accounts[0]).call()
+    const Heart = await contract.methods.getheart(accounts[0]).call()
+    
+       await ipfs.get(Kidney)
+      .then(res=>{
+        console.log(JSON.parse(res[0].content))
+        this.setState({
+            kidney_disease:{
+                test_result:JSON.parse(res[0].content).answer.prediction,
+                Probablity:JSON.parse(res[0].content).answer.probability
+
+            }
+        })
+        console.log(this.state)
+        //this.state.push(JSON.parse(res[0].content))
+      })
+      await ipfs.get(Liver)
+      .then(res=>{
+        console.log(JSON.parse(res[0].content))
+        this.setState({
+            liver_disease:{
+                test_result:JSON.parse(res[0].content).answer.prediction,
+                Probablity:JSON.parse(res[0].content).answer.probability
+
+            }
+        })
+        //this.state.push(JSON.parse(res[0].content))
+      })
+      await ipfs.get(Heart)
+      .then(res=>{
+        console.log(JSON.parse(res[0].content))
+        this.setState({
+            heart_disease:{
+                test_result:JSON.parse(res[0].content).answer.prediction,
+                Probablity:JSON.parse(res[0].content).answer.probability
+
+            }
+        })
+        //this.state.push(JSON.parse(res[0].content))
+      })
+  }
+    
+
+    constructor(props) {
+        super(props);
+        this.state = {
+            heart_disease:{
+                test_result:'Loading',
+                Probablity:Number,
+
+            },
+            kidney_disease:{
+                test_result:'Loading',
+                
+                Probablity:Number
+            },
+            liver_disease:{
+                test_result:'Loading',
+                Probablity:Number
+            }
+
+          }
+        };
+    
+    
+    
+    
+    
     goback = (e) =>{
         e.preventDefault();
       
@@ -31,47 +146,30 @@ render(){
                             Heart Disease
                         </Card.Header>
                         <Card.Body>
-                        <b>Test results:</b> Positive Or Negative
+                        <b>Test results:</b> {this.state.heart_disease.test_result}
                         <br></br>
-                        <b>Probablity:</b>number
+                        <b>Probablity:</b>{this.state.heart_disease.Probablity}
                         </Card.Body>
                     </Card>
                     <Card>
                         <Card.Header>
-                            Malaria
+                            Kidney Disease
                         </Card.Header>
                         <Card.Body>
-                        <b>Test results:</b> Positive Or Negative
+                        <b>Test results:</b>{this.state.kidney_disease.test_result}
                         <br></br>
-                        <b>Probablity:</b>number
+                        <b>Probablity:</b>{this.state.kidney_disease.Probablity}
                         </Card.Body>
                     </Card><Card>
                         <Card.Header>
-                            Kidney disease
+                            Liver disease
                         </Card.Header>
                         <Card.Body>
-                        <b>Test results:</b> Positive Or Negative 
+                        <b>Test results:</b> {this.state.liver_disease.test_result} 
                         <br></br>
-                        <b>Probablity:</b>number
+                        <b>Probablity:</b>{this.state.liver_disease.Probablity}
                         </Card.Body>
-                    </Card><Card>
-                        <Card.Header>
-                            Fever
-                        </Card.Header>
-                        <Card.Body>
-                        <b>Test results:</b>Positive Or Negative
-                        <br></br>
-                        <b>Probablity:</b>number
-                        </Card.Body>
-                    </Card><Card>
-                        <Card.Header>
-                            Viral Infection
-                        </Card.Header>
-                        <Card.Body>
-                        <b>Test results:</b> Positive Or Negative
-                        <br></br>
-                        <b>Probablity:</b>number
-                        </Card.Body>
+                    
                     </Card>
                 
                 </CardDeck>

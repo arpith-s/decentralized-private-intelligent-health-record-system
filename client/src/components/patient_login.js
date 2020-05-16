@@ -63,11 +63,11 @@ class patient_login extends Component {
     console.log(this.state.lat)
     console.log(this.state.long)
 
-    await this.state.contract.methods.addUser(body.username,body.password,body.address,'True').send({ from: this.state.accounts[0] })
+    await this.state.contract.methods.addUser(body.username,body.password,body.address,'True',body.lat.toString(),body.long.toString()).send({ from: this.state.accounts[0] })
     // Get the value from the contract to prove it worked.
    const response = await this.state.contract.methods.find_user_name(body.address).call();
     console.log(response)
-      
+  
   }
 
    handleSubmit_pat_signin = async (e) =>{

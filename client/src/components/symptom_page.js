@@ -39,6 +39,7 @@ class symptom_page extends Component{
               tasks:[],
               prediction:''
             },
+            sym_array:[],
           plainArray: [ "itching","skin_rash","nodal_skin_eruptions","continuous_sneezing","shivering","chills","joint_pain","stomach_pain",
           "acidity","ulcers_on_tongue","muscle_wasting","vomiting","burning_micturition","spotting_ urination","fatigue","weight_gain",
           "anxiety","cold_hands_and_feets","mood_swings","weight_loss","restlessness","lethargy","patches_in_throat","irregular_sugar_level",
@@ -159,14 +160,26 @@ class symptom_page extends Component{
       addItem() {
         this.selectedValues.push({ key: "Option 3", cat: "Group 1" });
       };
+
+
+handlesym = (e) =>{
+  this.setState({
+    sym_array:e
+});
+console.log(e)
+console.log(this.state.sym_array)
+}
+
+
       handleSubmit(e){
 
        
       
         const body={
-          symptoms:this.state.plainArray
+          symptoms:this.state.sym_array
         
          }
+         console.log(body)
          Axios.post('https://cbmh-ml.herokuapp.com/apis/realtime/', body).then(res=>{
     this.setState({
       symptoms:res.data
@@ -198,7 +211,7 @@ class symptom_page extends Component{
       <Card>
 <Card.Header>Possible Symptoms</Card.Header>   
  <br/>
- <Multiselect options={plainArray} isObject={false} />
+ <Multiselect options={plainArray} isObject={false} onSelect={(e)=>{this.handlesym(e)}}/>
 <br/>
 <Button className="predict-bttn" onClick={(e)=> {this.handleSubmit(e)}}>Predict</Button>
 

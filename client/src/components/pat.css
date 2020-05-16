@@ -17,10 +17,10 @@
     margin-right: 29%;
 }
 
-.default{
-    margin-top:15%;
+.acc{
+    margin-top: 2%;
     margin-left: 45%;
-    background-color: green;
+    background-color:lightgreen;
 }
 .remove{
     background-color: red;
@@ -28,3 +28,8 @@
     margin-top:1%;
     
 }
+
+.h1-style{
+    padding-top: 5%;
+}
+

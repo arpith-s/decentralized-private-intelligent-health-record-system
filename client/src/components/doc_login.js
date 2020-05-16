@@ -91,7 +91,7 @@ class doc_login extends Component {
     }
     else
     {
-      console.log("Fail")
+      alert("Username or password is wrong")
     }
   }
 
