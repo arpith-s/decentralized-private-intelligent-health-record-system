@@ -64,7 +64,8 @@ class lab_analysis extends Component{
     const Liver = await contract.methods.getLiver(accounts[0]).call()
     const Heart = await contract.methods.getheart(accounts[0]).call()
     
-       await ipfs.get(Kidney)
+    if(Kidney.length>3){
+        await ipfs.get(Kidney)
       .then(res=>{
         console.log(JSON.parse(res[0].content))
         this.setState({
@@ -77,7 +78,9 @@ class lab_analysis extends Component{
         console.log(this.state)
         //this.state.push(JSON.parse(res[0].content))
       })
-      await ipfs.get(Liver)
+    }
+       if(Liver.length>3){
+        await ipfs.get(Liver)
       .then(res=>{
         console.log(JSON.parse(res[0].content))
         this.setState({
@@ -89,7 +92,10 @@ class lab_analysis extends Component{
         })
         //this.state.push(JSON.parse(res[0].content))
       })
-      await ipfs.get(Heart)
+       }
+      
+       if(Heart.length>3){
+        await ipfs.get(Heart)
       .then(res=>{
         console.log(JSON.parse(res[0].content))
         this.setState({
@@ -101,6 +107,8 @@ class lab_analysis extends Component{
         })
         //this.state.push(JSON.parse(res[0].content))
       })
+       }
+      
   }
     
 

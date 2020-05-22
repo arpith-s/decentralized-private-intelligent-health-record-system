@@ -6,6 +6,9 @@ import ipfs from '../ipfs'
 import './common_disease.css'
 import getWeb3 from "../getWeb3";
 import RecordContract from "../contracts/Record.json";
+import Radio from '@material-ui/core/Radio';
+import RadioGroup from '@material-ui/core/RadioGroup';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
 class heart_disease extends Component{
 
   state = {  web3: null, accounts: null, contract: null, username: null, password: null, address: null};
@@ -43,14 +46,14 @@ class heart_disease extends Component{
         super(props);
         this.state = {
           age:Number,
-          sex:Number,
+          sex:0,
           cp:Number,
           trestbps:Number,
           chol:Number,
-          fbs:Number,
+          fbs:1,
           restecg:Number,
           thalach:Number,
-          exang:Number,
+          exang:0,
           oldpeak:Number,
           slope:Number,
           ca:Number,
@@ -158,11 +161,15 @@ render(){
     <h6 class="col-sm-2 col-form-label">Patient's Age :</h6>
     <div class="col-sm-10">
     <input type="text" id="age"  onChange={(e)=>this.handleChange(e)}/>
-    </div>
+    </div><br/>
     <div class="col-sm-10">
     <h6>Patient's sex:</h6>
-    <label><input type="radio" name="sex" id="sex" value="1" onChange={(e)=>this.handleChange(e)}/>Male</label><br/>
-    <label><input  type="radio" name="sex" id="sex"  value="0" onChange={(e)=>this.handleChange(e)}/>female</label>
+
+    <RadioGroup  name="gender1" id="sex" onChange={(e)=>this.handleChange(e)}>
+        <FormControlLabel value='0' control={<Radio />} label="Female" />
+        <FormControlLabel value='1' control={<Radio />} label="Male"/>
+        </RadioGroup>
+   
     </div>
     </div>
 
@@ -190,8 +197,10 @@ render(){
     <div class="form-group row">
     <h6 class="col-sm-2 col-form-label">Is Fasting blood sugar level>120:</h6>
     <div class="col-sm-10">
-    <label><input type="radio" name="fbs" id="fbs" value="1" onChange={(e)=>this.handleChange(e)}/>Yes</label><br/><br/>
-    <label><input type="radio" name="fbs" id="fbs"  value="0" onChange={(e)=>this.handleChange(e)}/>No</label>
+    <RadioGroup  name="fbs" id="fbs" onChange={(e)=>this.handleChange(e)}>
+        <FormControlLabel value='1' control={<Radio />} label="Yes" />
+        <FormControlLabel value='0' control={<Radio />} label="No"/>
+        </RadioGroup>
     </div>
     </div>          
              
@@ -212,8 +221,10 @@ render(){
     <div class="form-group row">
     <h6 class="col-sm-2 col-form-label">Exercise induced angina:</h6>
     <div class="col-sm-10">
-    <label><input type="radio" name="exang" id="exang" value="1" onChange={(e)=>this.handleChange(e)}/>Yes</label><br/><br/>
-    <label><input type="radio" name="exang" id="exang"  value="0" onChange={(e)=>this.handleChange(e)}/>No</label>
+    <RadioGroup  id="exang" onChange={(e)=>this.handleChange(e)}>
+        <FormControlLabel value="1" control={<Radio />} label="Yes" />
+        <FormControlLabel value="0" control={<Radio />} label="No"/>
+        </RadioGroup>
     </div>
     </div>          
              

@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import './doc_homy.css'
 import ipfs from '../ipfs'
 import { MDBInput } from "mdbreact";
-import {Card ,Table, DropdownButton,Dropdown,Modal, CardDeck } from 'react-bootstrap';
+import {Card ,CardBody, Table, DropdownButton,Dropdown,Modal, CardDeck, Button } from 'react-bootstrap';
 import { Chart } from "react-google-charts";
 import { Multiselect } from "multiselect-react-dropdown";
 import DNavbar from './DNavbar'
@@ -13,6 +13,7 @@ import getWeb3 from "../getWeb3";
 import RecordContract from "../contracts/Record.json";
 import { BrowserRouter, Route } from 'react-router-dom'
 import { MultiSelect } from '@progress/kendo-react-dropdowns';
+import { CardHeader } from '@material-ui/core';
 const symptoms = [ "Vommiting", "Headache", "Fever", "Common cold", "Tonsils", "Cough"];
 
 class doc_home extends Component{
@@ -51,147 +52,137 @@ class doc_home extends Component{
   constructor(props) {
     super(props);
     this.state = {
+      record:{
+
       patname:'',
       docaddr:'',
       add_date:'',
       disease:[],
-      symptoms:[],
+      symptom:[],
       medicines:[],
       plainArray: ["headache", "vommiting", "throught pain", "bodyache", "stomach pain"],
-      
-    };
-    this.style = {
-      chips: {
-        background: "red"
       },
-      searchBox: {
-        border: "none",
-        "border-bottom": "1px solid blue",
-        "border-radius": "0px"
+      heart_disease:{
+        age:Number,
+        sex:Number,
+        cp:Number,
+        trestbps:Number,
+        chol:Number,
+        fbs:Number,
+        restecg:Number,
+        thalach:Number,
+        exang:Number,
+        oldpeak:Number,
+        slope:Number,
+        ca:Number,
+        thal:Number,
       },
-      multiselectContainer: {
-        color: "red"
+      kidney_disease:{
+        age:Number,
+      bp:Number,
+      sg:Number,
+      al:Number,
+      su:Number,
+      rbc:Number,
+      pc:Number,
+      pcc:Number,
+      ba:Number,
+      bgr:Number,
+      bu:Number,
+      sc:Number,
+      sod:Number,
+      pot:Number,
+      hemo:Number,
+      pcv:Number,
+      wc:Number,
+      rc:Number,
+      htn:Number,
+      dm:Number,
+      cad:Number,
+      appet:Number,
+      pe:Number,
+      ane:Number
+      },
+      liver_disease:{
+        age:Number,
+        gender:Number,
+        tb:Number,
+        db:Number,
+        ap:Number,
+        aa:Number,
+        asa:Number,
+        tp:Number,
+        alb:Number,
+        ag:Number
       }
+      
     };
-    this.addItem = this.addItem.bind(this);
   }
-  addItem() {
-    this.selectedValues.push({ key: "Option 3", cat: "Group 1" });
-  }
-
-
-patname = (e) =>{
-    this.setState({
-      [e.target.id]:e.target.value
-    })
-    console.log(this.state)
-   }
-   
-   
-docaddr = (e) =>{
-    this.setState({
-      [e.target.id]:e.target.value
-    })
-    console.log(this.state)
-   }   
-
-add_date = (e) =>{
-    this.setState({
-      [e.target.id]:e.target.value
-    })
-    console.log(this.state)
-   } 
-
-disease = (e) =>{
-    this.setState({
-      [e.target.id]:e.target.value
-    })
-    console.log(this.state)
-   } 
-
-medicines = (e) =>{
-    this.setState({
-      [e.target.id]:e.target.value
-    })
-    console.log(this.state)
-   } 
-
-handlesymptoms = (e) =>{
-  this.setState({
-    symptoms: [e.target.value ]
-});
-console.log(e.target.value)
-}
-
-
-handleSubmit_doc_home = async (e) =>{
+  handleSubmit = async (e) =>{
     e.preventDefault();
-      
-   const diseases=this.state.disease;
-   //const diseases=disease.split(",");
-  // console.log(diseases) 
-    
-   const medicine=this.state.medicines;
-   //const medicine=medicines.split(",");
-   //console.log(medicine) 
-   
-   const ad_date=this.state.add_date;
-   const add_date=new Date(ad_date).getTime()
-   const unix_time=Math.floor(add_date/1000)
-   //onsole.log(unix_time)
-   const symptom=this.state.symptoms.join(",")
-   const body= {
-      patname:this.state.patname,
-      docaddr:this.state.docaddr,
-      add_date:unix_time,
-      disease:diseases,
-      medicines:medicine ,
-      symptom:symptom
-    }
-    console.log(body)
-    //console.log(this.state.patname);
-    //console.log(this.state.docaddr)
-    //console.log(this.state.add_date);
-    //console.log(this.state.disease);
-    //console.log(this.state.medicines);
-   // console.log(this.state.symptoms)
-  //  console.log(body)
-    //console.log(this.state.accounts[0])
+    console.log(this.state.address)
+    const heart = await this.state.contract.methods.getheart(this.state.address).call()
+    const liver = await this.state.contract.methods.getLiver(this.state.address).call()
+    const kidney = await this.state.contract.methods.getKidney(this.state.address).call()
 
-    await ipfs.files.add(Buffer.from(JSON.stringify(body)))
-  .then(res => {
-    const hash = res[0].hash
-    console.log('added data hash:', hash)
-    this.setState({
-      getHash:hash
+      if(heart.length>3){
+
+    await ipfs.get(heart)
+    .then(res=>{
+     // console.log(JSON.parse(res[0].content))
+      this.setState({
+          heart_disease:JSON.parse(res[0].content)    
+      })
     })
-    return ipfs.files.cat(hash)
-  })
-  .then(output => {
-    console.log('data : ',output)
-    console.log('retrieved data:', JSON.parse(output))
-  })
-  await ipfs.get(this.state.getHash)
-  .then(res=>{
-    console.log(JSON.parse(res[0].content))
-  })
+      }
 
-    try {
-     const s= await this.state.contract.methods.addRecord(this.state.patname,this.state.getHash).send({ from: this.state.accounts[0]})
-    console.log(s);
+      if(liver.length>3){
+        await ipfs.get(liver)
+      .then(res=>{
+       // console.log(JSON.parse(res[0].content))
+        this.setState({
+          liver_disease:JSON.parse(res[0].content)    
+        })
+      })
+
+      }
       
-    } catch (error) {
-      console.log("Error ::::",error)
-    }
+      if(kidney.length>3){
+        await ipfs.get(kidney)
+      .then(res=>{
+       // console.log(JSON.parse(res[0].content))
+        this.setState({
+          kidney_disease:JSON.parse(res[0].content)    
+        })
+      })
+      }
+      
+      const response = await this.state.contract.methods.getId(this.state.address).call()
+      const responsenum = await this.state.contract.methods.getRecordCountPatient(response).call()
+      const record = await this.state.contract.methods.getRecord(this.state.address,responsenum).call()
+      
+      if(record.length>3){
+        await ipfs.get(record)
+      .then(res=>{
+       // console.log(JSON.parse(res[0].content))
+        this.setState({
+          record:JSON.parse(res[0].content)    
+        })
+      })
+      
+      }
+      
+      console.log(this.state)
+  } 
 
+  handleChange =(e) =>{
     
-  
-   // console.log("Done")
+    this.setState({
+      address:e.target.value
+    })
     
     
-   // const response = await this.state.contract.methods.getRecord(body.patname,0).call();
-   // console.log(response)
-}
+  }
 
   render(){
     const { plainArray, objectArray, selectedValues } = this.state;
@@ -206,29 +197,17 @@ handleSubmit_doc_home = async (e) =>{
       </BrowserRouter>
       
     <div className="entire-page">
+
+<Card>
+  <Card.Header>Plaese enter the address</Card.Header>
+  <Card.Body>
+    <input type="text"  onChange={(e)=>this.handleChange(e)}></input>
+    <Button className="s-btn" onClick={(e) =>this.handleSubmit(e)}>Submit</Button>
+  </Card.Body>
+</Card>
+
     <CardDeck>
-              <Card border="secondary" style={{ width: '18rem' }}>
-    <Card.Header>Patient's details</Card.Header>
-    <Card.Body>
-      <img className="img-class" src="https://media.istockphoto.com/vectors/user-icon-vector-with-laptop-computer-female-person-profile-avatar-vector-id903044512?k=6&m=903044512&s=612x612&w=0&h=8fr2Q_lJWyQsN7QSbUm0GKIoAL_YS9NXjnENxh4bNBM="></img>
-      <Table>
-        <tr>
-        <td>Name:</td>
-        <td>GAMA</td>
-        </tr>
-        <tr>
-        <td>Place:</td>
-        <td>Mangalore</td>
-        </tr><tr>
-        <td>Contact no:</td>
-        <td>9475869584</td>
-        </tr><tr>
-        <td>email-id</td>
-        <td>gama@gmail.com</td>
-        </tr>
-      </Table>
-    </Card.Body>
-  </Card>
+            
   <br />
 
   <Card border="secondary" style={{ width: '18rem' }}>
@@ -237,30 +216,30 @@ handleSubmit_doc_home = async (e) =>{
     <Table>
         <tr>
         <td>Patient's Address:</td>
-        <td>0xaBB4bb89B4F54EEC4749089753Cec16417Ac419E</td>
+        <td>{this.state.record.patname}</td>
         </tr>
         <tr>
         <td>Doctor's Address:</td>
-        <td>0xF493aA578Bc6212b4C75Ed858b7822fb5E1E925A</td>
+        <td>{this.state.record.docaddr}</td>
         </tr><tr>
         <td>Admission Date:</td>
-        <td>16/03/2020</td>
+        <td>{this.state.record.add_date}</td>
         </tr>
         <tr>
         <td>Possible Symptoms:</td>
-        <td>Vommiting, Stomache, Headache</td>
+        <td>{this.state.record.symptom}</td>
         </tr>
         <tr>
         <td>Disease Predicted:</td>
-        <td>Food Poison</td>
+        <td>{this.state.record.disease}</td>
         </tr>
         <tr>
         <td>Possible Medicines:</td>
-        <td>Aspirin,Paracetomol</td>
+        <td>{this.state.record.medicines}</td>
         </tr>
       </Table>
     </Card.Body>
-  </Card>
+  </Card> 
   <br />
               </CardDeck>
 {/* This is for all lab records for various disease checks */}
@@ -274,54 +253,55 @@ handleSubmit_doc_home = async (e) =>{
     <Table>
         <tr>
         <td>age -></td>
-        <td>80</td>
+        <td>{this.state.heart_disease.age}</td>
         </tr>
         <tr>
         <td>sex -> </td>
-        <td>female</td>
+        <td>{this.state.heart_disease.sex}</td>
         </tr><tr>
         <td>cp -> </td>
-        <td>values from record</td>
+        <td>{this.state.heart_disease.cp}</td>
         </tr>
         <tr>
         <td>trestbps -></td>
-        <td>values from record</td>
+        <td>{this.state.heart_disease.trestbps}</td>
         </tr>
         <tr>
         <td>chol -> </td>
-        <td>values from record</td>
+        <td>{this.state.heart_disease.chol}</td>
         </tr>
         <tr>
         <td>fbs -></td>
-        <td>values from record</td>
+        <td>{this.state.heart_disease.fbs}</td>
         </tr>
         <tr>
         <td>restecg -></td>
-        <td>values from record</td>
+        <td>{this.state.heart_disease.restecg}</td>
         </tr>
         <tr>
         <td>thalach ->   </td>
-        <td>values from record</td>
+        <td>{this.state.heart_disease.thalach}</td>
         </tr>
         <tr>
         <td> exang ->  </td>
-        <td>values from record</td>
+        <td>{this.state.heart_disease.exang}</td>
         </tr>
         <tr>
         <td>oldpeak ->    </td>
-        <td>values from record</td>
+        <td>{this.state.heart_disease.oldpeak}</td>
         </tr>
         <tr>
         <td>slope ->   </td>
-        <td>values from record</td>
+        <td>{this.state.heart_disease.slope}</td>
         </tr>
         <tr>
         <td>ca ->    </td>
-        <td>values from record</td>
+        <td>{this.state.heart_disease.ca}</td>
         </tr>
         <tr>
         <td>thal ->   </td>
-        <td>values from record</td>
+        <td>{this.state.heart_disease.thal}</td>
+        <td>{}</td>
         </tr>
       </Table>
     </Card.Body>
@@ -335,59 +315,140 @@ handleSubmit_doc_home = async (e) =>{
     <Table>
         <tr>
         <td>age -></td>
-        <td>80</td>
+        <td>{this.state.kidney_disease.age}</td>
         </tr>
         <tr>
         <td>bp -> </td>
-        <td>values from record</td>
+        <td>{this.state.kidney_disease.bp}</td>
         </tr><tr>
         <td>sg -> </td>
-        <td>values from record</td>
+        <td>{this.state.kidney_disease.sg}</td>
         </tr>
         <tr>
         <td>al -></td>
-        <td>values from record</td>
+        <td>{this.state.kidney_disease.al}</td>
         </tr>
         <tr>
         <td>su -> </td>
-        <td>values from record</td>
+        <td>{this.state.kidney_disease.su}</td>
         </tr>
         <tr>
         <td>rbc -></td>
-        <td>values from record</td>
+        <td>{this.state.kidney_disease.rbc}</td>
         </tr>
         <tr>
         <td>pc -></td>
-        <td>values from record</td>
+        <td>{this.state.kidney_disease.pc}</td>
         </tr>
         <tr>
         <td>pcc ->   </td>
-        <td>values from record</td>
+        <td>{this.state.kidney_disease.pcc}</td>
         </tr>
         <tr>
         <td> ba ->  </td>
-        <td>values from record</td>
+        <td>{this.state.kidney_disease.ba}</td>
         </tr>
         <tr>
         <td>bgr ->    </td>
-        <td>values from record</td>
+        <td>{this.state.kidney_disease.bgr}</td>
         </tr>
         <tr>
         <td>bu ->   </td>
-        <td>values from record</td>
+        <td>{this.state.kidney_disease.bu}</td>
         </tr>
         <tr>
         <td>sc ->    </td>
-        <td>values from record</td>
+        <td>{this.state.kidney_disease.sc}</td>
         </tr>
         <tr>
         <td>sod ->   </td>
-        <td>values from record</td>
+        <td>{this.state.kidney_disease.sod}</td>
+        </tr>
+        <tr>
+        <td>pot ->   </td>
+        <td>{this.state.kidney_disease.pot}</td>
+        </tr><tr>
+        <td>hemo ->   </td>
+        <td>{this.state.kidney_disease.hemo}</td>
+        </tr><tr>
+        <td>pcv ->   </td>
+        <td>{this.state.kidney_disease.pcv}</td>
+        </tr><tr>
+        <td>wc ->   </td>
+        <td>{this.state.kidney_disease.wc}</td>
+        </tr><tr>
+        <td>rc ->   </td>
+        <td>{this.state.kidney_disease.rc}</td>
+        </tr><tr>
+        <td>htn ->   </td>
+        <td>{this.state.kidney_disease.htn}</td>
+        </tr><tr>
+        <td>dm ->   </td>
+        <td>{this.state.kidney_disease.dm}</td>
+        </tr><tr>
+        <td>cad ->   </td>
+        <td>{this.state.kidney_disease.cad}</td>
+        </tr><tr>
+        <td>appet ->   </td>
+        <td>{this.state.kidney_disease.appet}</td>
+        </tr><tr>
+        <td>pe ->   </td>
+        <td>{this.state.kidney_disease.pe}</td>
+        </tr><tr>
+        <td>ane ->   </td>
+        <td>{this.state.kidney_disease.ane}</td>
         </tr>
       </Table>
     </Card.Body>
   </Card>
-  
+  <br/>
+  <Card border="secondary" style={{ width: '18rem' }}>
+    <Card.Header>Liver disease report</Card.Header>
+    <Card.Body>
+    <Table>
+        <tr>
+        <td>age -></td>
+        <td>{this.state.liver_disease.age}</td>
+        </tr>
+        <tr>
+        <td>gender -> </td>
+        <td>{this.state.liver_disease.gender}</td>
+        </tr><tr>
+        <td>tb -> </td>
+        <td>{this.state.liver_disease.tb}</td>
+        </tr>
+        <tr>
+        <td>db -></td>
+        <td>{this.state.liver_disease.db}</td>
+        </tr>
+        <tr>
+        <td>ap -> </td>
+        <td>{this.state.liver_disease.ap}</td>
+        </tr>
+        <tr>
+        <td>aa -></td>
+        <td>{this.state.liver_disease.aa}</td>
+        </tr>
+        <tr>
+        <td>asa -></td>
+        <td>{this.state.liver_disease.asa}</td>
+        </tr>
+        <tr>
+        <td>tp ->   </td>
+        <td>{this.state.liver_disease.tp}</td>
+        </tr>
+        <tr>
+        <td> alb ->  </td>
+        <td>{this.state.liver_disease.alb}</td>
+        </tr>
+        <tr>
+        <td>ag ->    </td>
+        <td>{this.state.liver_disease.ag}</td>
+        </tr>
+        
+      </Table>
+    </Card.Body>
+  </Card>
   </CardDeck>
   </Card.Body>
 </Card>

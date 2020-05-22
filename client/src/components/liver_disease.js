@@ -9,6 +9,10 @@ import DNavbar from './DNavbar'
 import getWeb3 from "../getWeb3";
 import RecordContract from "../contracts/Record.json";
 import ipfs from '../ipfs'
+import Radio from '@material-ui/core/Radio';
+import RadioGroup from '@material-ui/core/RadioGroup';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+
 class liver_disease extends Component{
   
 
@@ -157,8 +161,10 @@ render(){
   </div>
   <div class="col-sm-10">
   <h6>Patient's sex:</h6>
-  <label><input type="radio" name="gender" id="gender" value="1" onChange={(e)=>this.handleChange(e)}/>Male</label><br/>
-  <label><input  type="radio" name="gender" id="gender"  value="0" onChange={(e)=>this.handleChange(e)}/>female</label>
+  <RadioGroup  name="gender1" id="sex" onChange={(e)=>this.handleChange(e)}>
+        <FormControlLabel value="0" control={<Radio />} label="Female" />
+        <FormControlLabel value="1" control={<Radio />} label="Male"/>
+        </RadioGroup>
   </div>
   </div>
 

@@ -223,13 +223,13 @@ console.log(this.state.sym_array)
  
     {this.state.symptoms.length?
   <div>    
-  <p>{this.state.symptoms.prediction}</p>
+  <h6>{this.state.symptoms.prediction}</h6>
   <p>{this.state.symptoms.tasks}</p>
   </div>
      :
     ( <div>    
-      <p>{this.state.symptoms.prediction}</p>
-      <p>{this.state.symptoms.tasks}</p>
+      <h5><b>{this.state.symptoms.prediction}</b></h5>
+      <h6>{this.state.symptoms.tasks}</h6>
       </div>)}
   </Card.Body>
 </Card>

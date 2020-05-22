@@ -60,6 +60,7 @@ class doc_login extends Component {
     // Get the value from the contract to prove it worked.
    const response = await this.state.contract.methods.getDoctorName(body.address).call();
     console.log(response)
+    alert("Successful!")
     // Update state with the result.
     //this.setState({ storageValue: response });
 
