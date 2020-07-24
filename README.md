@@ -18,6 +18,11 @@ In the current healthcare environment, the patient records are locked in multipl
     └───test
 ```
 ## :floppy_disk: Prerequisite:
+- Metamask
+- Ganache
+- Web3.js
+- Node Package manager (npm)
+- React
 
 ## :computer: Usage:
 
@@ -27,10 +32,16 @@ In the current healthcare environment, the patient records are locked in multipl
 	   git clone https://github.com/anushakalyani/anushakalyani.github.io.git
 	   ```
 	   * Some packages usages might change so you should run npm prune & npm install often. A common way to update is by doing
-	  ```npm prune``` 
-	  ```npm install```
+	  ```
+	  npm prune
+	  ``` 
+	  ```
+	  npm install
+	  ```
 	  * Runs the app in the development mode.   Open [http://localhost:3000](http://localhost:3000/) to view it in the browser.
-		  ```npm start```
+		  ```
+		  npm start
+		  ```
 	   
   
 
