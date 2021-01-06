@@ -6,7 +6,7 @@
     "@material-ui/core": "^4.9.5",
     "@progress/kendo-react-dropdowns": "^3.11.0",
     "@progress/kendo-react-intl": "^3.11.0",
-    "axios": "^0.19.2",
+    "axios": "^0.21.1",
     "bignumber.js": "^9.0.0",
     "ipfs-api": "^26.1.2",
     "ipfs-http-client": "^42.0.0",
