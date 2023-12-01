@@ -10,6 +10,7 @@ In the current healthcare environment, the patient records are locked in multipl
 .
 └───anushakalyani.github.io
     ├───client
+    ├───CBMH-ML
     │   ├───public
     │   └───src
     │       ├───components
@@ -45,6 +46,7 @@ In the current healthcare environment, the patient records are locked in multipl
 		  ```
 2. Machine Learning APIs documentation
 	* [https://cbmh-ml.herokuapp.com/apis/documentation/](https://cbmh-ml.herokuapp.com/apis/documentation/) 
+	* The code for training and deploying the machine learning models is under the CBMH-ML directory.
 	   
   
 
